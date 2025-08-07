@@ -1,0 +1,19 @@
+{
+  "name": "devtinder_backend",
+  "version": "1.0.0",
+  "description": "dev friendly zone",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/App.js"
+  },
+  "keywords": [
+    "nodeJs",
+    "javascript"
+  ],
+  "author": "Kunal",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}

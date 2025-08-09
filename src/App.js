@@ -6,25 +6,15 @@ const app = express();
 // After adding the route with handler funct that means, when the request is targeting that particular path then only server send the response. 
 // structure: app.use('route',requestHandlerFunction);
 
-// get call 
+// get call with queries pass in the URL
 app.get('/test',(req,res)=>{
-    console.log('request',req===global);
+    console.log('request',req.query);
     res.send({firstName:'kunal',lastName:'gautam'});
 });
-
-// post call
-
-app.post('/test',(req,res)=>{
-    // console.log('request',req===global);
-        res.send({firstName:'Ankit',lastName:'gautam'});
-
+app.get('/user/:id/:age/:work',(req,res)=>{
+    console.log('request',req.params);
+    res.send({firstName:'kunal',lastName:'gautam'});
 });
-app.delete('/test',(req,res)=>{
-    // console.log('request',req===global);
-        res.send('Data has been deleted');
-
-});
-
 // Listen all the request at port : 3000
 app.listen(3000,()=>{
     console.log('Server is running');

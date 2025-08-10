@@ -13,4 +13,9 @@ Understanding the middle ware .
 
 - Basically as developer, we don't want to expose our api to the external world,users. Hence
 - We need a mechanisms that help us to first authenticate those requestor, then let them get the response from the API.
-- e.g, Just to auth the admin, middle ware can we created just to athenticate all the several request which only make for the admin, URL like, local:3000/admin/getdata
+- e.g, Just to auth the admin, middle ware can we created just to athenticate all the several request which only make for the admin, URL like, local:3000/admin/getdata.
+
+Error handling-- used by 
+app.use('/',(err,req,res,next)=>{
+err.status(500).send('Something went wrong');
+});

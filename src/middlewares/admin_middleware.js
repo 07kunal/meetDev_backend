@@ -1,7 +1,7 @@
 // Created the logic to authenticate the admin. 
 let adminAuth = (req, res, next) => {
     console.log('Testing_middleware');
-    let authTokken = '1234';
+    let authTokken = '12345';
     if (authTokken === '12345') {
         next();
     } else {

@@ -19,3 +19,5 @@ Error handling-- used by
 app.use('/',(err,req,res,next)=>{
 err.status(500).send('Something went wrong');
 });
+
+-- Best practice to write the error handler is at the end of the code since, it handle all the routes only using all the routes. 

@@ -11,15 +11,22 @@ Error handling can be done using two major approach,
 app.use('/admin', adminAuth);
 // Get the data
 
+// using the Try catch method to handle the error.
 app.get('/admin', (req, res) => {
-    throw new Error('23232');
-    res.send('Send All the requested data');
+    try {
+        throw new Error('23232');
+        res.send('Send All the requested data');
+    } catch (error) {
+        if (error) res.send('Connection broke');
+
+    }
+
 });
 
 // Handle the error using the default method called : errorHandle. 
-app.use('/',(err,req,res,next)=>{
-   if (err) res.send('Something went wrong');
-})
+app.use('/', (err, req, res, next) => {
+    if (err) res.send('Something went wrong');
+});
 // Listen all the request at port : 3000
 app.listen(3000, () => {
     console.log('Server is running');

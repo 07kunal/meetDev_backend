@@ -1,46 +1,30 @@
 const express = require('express');
+const { adminAuth } = require('./middlewares/admin_middleware');
 const app = express();
 /* 
-Testing multi route handle inside the single route. 
-- Multi-route can be possible using next() function , which is given by the express JS. 
-- With this, on the same route, two or multi route handler can call. 
-- Precaution : if first route handler send the response then it's not possible to send the response on the same URL path with the 2nd route handler. 
-
-
-Point: 
-if the multi handler doesn't have the next() function and if any of the handler doesn't send the response then, it through the error. cause it still looking for the response from the next handler. 
-:- Instead of calling multi route handler inside the single route func, we can create diff route func of the same route. 
+Understanding the middle ware . 
+- Basically as developer, we don't want to expose our api to the external world,users. Hence
+- We need a mechanisms that help us to first authenticate those requestor, then let them get the response from the API. 
+- e.g, Just to auth the admin, middle ware can we created just to athenticate all the several request which only make for the admin, URL like, local:3000/admin/getdata
 
 */
-let rh1 = (req, res, next) => {
-    console.log('request-from handler1');
-    console.log('request-1 params', req.params);
-    console.log('request-1 query', req.query);
 
+// Now need to divert all the request to this middle ware. 
+app.use('/admin', adminAuth);
+// Get the data
 
-    next();
-    // res.send({ firstName: 'kunal', lastName: 'gautam' });
-}
-let rh2 = (req, res, next) => {
-    console.log('request-from handler2');
-    console.log('request-2 params', req.params);
-    console.log('request-2 query', req.query);
+app.get('/admin', (req, res) => {
 
+    res.send('Send All the requested data');
+});
+// post the data
+app.post('/admin', (req, res) => {
 
-    res.send({ firstName: 'kunal', lastName: 'gautam' });
-    next();
-}
-let rh3 = (req, res, next) => {
-    console.log('request-from handler3');
-    console.log('request-3 params', req.params);
-    console.log('request-3 query', req.query);
-
-
-    res.send({ firstName: 'kunal', lastName: 'gautam' });
-}
-app.get('/test/:id/:work/:age', rh1);
-app.get('/test/:id/:work/:age', rh2);
-
+    res.send({
+        firstName: 'Kunal',
+        lastName: 'Gautam'
+    });
+});
 // Listen all the request at port : 3000
 app.listen(3000, () => {
     console.log('Server is running');

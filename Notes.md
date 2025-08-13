@@ -21,3 +21,9 @@ err.status(500).send('Something went wrong');
 });
 
 -- Best practice to write the error handler is at the end of the code since, it handle all the routes only using all the routes. 
+
+-- Schema and model 
+
+// Schema : Basically the way of defining the structure to store the information of the any db e.g User. 
+ we can use the mongoose for that. 
+

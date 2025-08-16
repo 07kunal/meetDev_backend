@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 /* 
 mongoose.connect('mongodb+srv://MO-cluster:oDVhIyh8q8hphOV0@mo-cluster.dwdljhy.mongodb.net/
@@ -12,7 +13,7 @@ This above URL return the promise hence it's good practice to wrap this function
 */
 
 const connectDB = async () => {
-    await mongoose.connect('mongodb+srv://MO-cluster:oDVhIyh8q8hphOV0@mo-cluster.dwdljhy.mongodb.net/');
+    await mongoose.connect(`mongodb+srv://${process.env.DB_Name}:${process.env.DB_pwd}@mo-cluster.dwdljhy.mongodb.net/meedDev`);
 }
 module.exports = {
     connectDB: connectDB

@@ -27,3 +27,6 @@ err.status(500).send('Something went wrong');
 // Schema : Basically the way of defining the structure to store the information of the any db e.g User. 
  we can use the mongoose for that. 
 
+
+// findthe user by just particular filter key. e.g emailId
+

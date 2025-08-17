@@ -64,5 +64,42 @@ app.get('/feed', async (req, res) => {
     }
 });
 
+// Creating Delete api that that delete the user from the DB using the _id
+app.delete('/user_delete', async (req, res) => {
+    const userId = req?.body?.userId;
+    try {
+        const deletedUser = await User.findByIdAndDelete({ _id: userId });
+        console.log('deletedUser', deletedUser);
+        if (deletedUser) {
+
+            res.send("Selected user deleted");
+        } else {
+            res.status(400).send("Error occured");
+
+        }
+    } catch (error) {
+        res.status(400).send("Error occured", error.message);
+
+    }
+
+});
+
+// Update the Data for the particular UserId
+
+app.patch('/user_update', async (req, res) => {
+    const { userId } = req?.body;
+    console.log('userId', userId);
+    const updatedData = req.body;
+    try {
+        const udpateUser = await User.findByIdAndUpdate(userId, updatedData, { returnDocument: 'before' });
+        console.log('updateUser', udpateUser)
+        res.send('User data update successfully');
+
+    } catch (error) {
+        res.status(400).send("Error occured", error.message);
+
+    }
+});
+
 
 

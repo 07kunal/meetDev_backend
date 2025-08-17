@@ -4,18 +4,18 @@ const { connectDB } = require('./config/database.js');
 const User = require('./model/user.js');
 
 // creating the post request,
+app.use(express.json());
+app.post('/signup', async (req, res) => {
 
-app.post('/signup', async (req,res) => {
-    
-    //  Creating the new instance from the model
-    const userDetails = new User({
-        firstName: 'Rahul',
-        lastName: 'Gautam',
-        email: 'kunalTest21@gmail.com',
-        password: 'test#321'
-    })
-    await userDetails.save();
-  res.send("user add done");
+    //  Creating the new instance from the user model and data which pass from the end user ( like UI, postman );
+    const userDetails = new User(req.body);
+    try {
+        await userDetails.save();
+        res.send("user add done");
+    } catch (error) {
+        res.status(400).send("Error occured", error.message);
+    }
+
 });
 
 connectDB().

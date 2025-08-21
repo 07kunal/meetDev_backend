@@ -27,7 +27,9 @@ app.post('/signup', async (req, res) => {
         await userDetails.save();
         res.send("user add done");
     } catch (error) {
-        res.status(400).send("Error occured", error.message);
+        console.log('test3656565', error?.errorResponse);
+
+        res.status(400).send( error.message);
     }
 
 });
@@ -44,6 +46,8 @@ app.get('/user', async (req, res) => {
 
         }
     } catch (error) {
+        console.log('test000000', error);
+
         res.status(400).send("Error occured", error.message);
     }
 

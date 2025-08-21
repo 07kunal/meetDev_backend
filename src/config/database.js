@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 /* 
-mongoose.connect('mongodb+srv://MO-cluster:oDVhIyh8q8hphOV0@mo-cluster.dwdljhy.mongodb.net/
-
 This above URL return the promise hence it's good practice to wrap this function in async func.
 
 - right to to setup the connection with the clustor/db is that,

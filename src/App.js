@@ -4,7 +4,9 @@ const { connectDB } = require('./config/database.js');
 const User = require('./model/user.js');
 const bcrypt = require('bcrypt');
 const { validation } = require('./validator/validator.js');
-
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const { userAuth } = require('./middlewares/auth_middleware.js');
 
 connectDB().
     then(() => {
@@ -20,6 +22,9 @@ connectDB().
 
 // Middle ware that will convert the json into javascript object that can under stand by the server. 
 app.use(express.json());
+// cookies parser;
+
+app.use(cookieParser());
 
 // Creating and storing the user information into the DB. 
 
@@ -28,7 +33,7 @@ app.post('/signup', async (req, res) => {
 
     try {
         validation(req.body);
-        const { password } = req.body;
+        const { password } = req.body; // write now pwd is not hashed from the client side.
 
         let hashPassword = await bcrypt.hash(password, 10);
 
@@ -51,14 +56,18 @@ app.post('/signup', async (req, res) => {
 
 // login api,
 app.post('/login', async (req, res) => {
+    // backend level authetication 
+    const userFound = await User.findOne({ emailId: req.body.emailId });
     try {
-        const userFound = await User.findOne({ emailId: req.body.emailId });
-        console.log('userFound',userFound);
+        console.log('userFound', userFound);
         if (!userFound) throw new Error("Invalid Credential");
-        const isPasswordValid = bcrypt.compare(req.body.password, userFound.password);
+        const isPasswordValid = await bcrypt.compare(req.body.password, userFound.password);
         if (!isPasswordValid) {
             throw new Error("Password is not valid");
         } else {
+            // sending cookie along side after login
+            const token = jwt.sign({ _id: userFound._id }, '1234D');
+            res.cookie('token', token);
             res.send("Login successfully");
         }
 
@@ -67,12 +76,36 @@ app.post('/login', async (req, res) => {
 
     }
 });
+
+// get the profile
+
+app.get('/profile', async (req, res) => {
+    try {
+        const cookies = req.cookies;
+        if (!cookies) {
+            res.status(400).send('Invalid credential ');
+        }
+        let isValideTokken = await jwt.verify(cookies.token, '1234D');
+        const loggedInUser = await User.findById({ _id: isValideTokken._id });
+
+        if (loggedInUser) {
+            res.send(loggedInUser);
+        } else {
+            res.status(404).send('user not found');
+        }
+
+    } catch (error) {
+        res.status(400).send('user not found');
+
+    }
+});
+
 // Filter the user with the emailId or else. by using the find method of the mongoose. 
 app.get('/user', async (req, res) => {
     const userEmail = req.body.email;
+    console.log('useremail', userEmail);
     try {
-        const user = await User.findOne({ email: userEmail });
-        console.log('user', user);
+        const user = await User.findOne({ emailId: userEmail });
         if (user || user.length > 0) {
             res.send(user);
         } else {
@@ -89,7 +122,7 @@ app.get('/user', async (req, res) => {
 
 // Getting all the user at once. 
 
-app.get('/feed', async (req, res) => {
+app.get('/feed', userAuth, async (req, res) => {
     try {
         const userData = await User.find({});
         if (userData || userData.length > 0) {
@@ -97,8 +130,9 @@ app.get('/feed', async (req, res) => {
         } else {
             res.status(400).send("User not found");
         }
-    } catch (error) {
 
+    } catch (error) {
+        console.log('error', error);
     }
 });
 

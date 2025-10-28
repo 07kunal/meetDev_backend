@@ -12,20 +12,23 @@ const userSchema = new Schema({
         },
     },
     lastName: {
-        type: String
+        type: String,
+        required: true,
     },
     emailId: {
         type: String,
         required: true,
+        index: true,
         unique: true,
+        sparse: true,
         lowercase: true,
-        validate: (value)=>{
-            if(!validator.isEmail(value)) throw new Error('Email Address is inValid');
+        validate: (value) => {
+            if (!validator.isEmail(value)) throw new Error('Email Address is inValid');
         }
     },
     password: {
         type: String,
-   
+
     },
     age: {
         type: Number,

@@ -12,6 +12,7 @@ let userAuth = async (req, res, next) => {
         const loggedInUser = await User.find({ _id: isValideObj._id });
         console.log('Testing_middleware');
         if (loggedInUser) {
+            req.user = loggedInUser;
             next();
         } else {
           throw new Error('Admin is not autharised');

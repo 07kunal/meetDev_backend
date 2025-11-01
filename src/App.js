@@ -79,15 +79,9 @@ app.post('/login', async (req, res) => {
 
 // get the profile
 
-app.get('/profile', async (req, res) => {
+app.get('/profile', userAuth, async (req, res) => {
     try {
-        const cookies = req.cookies;
-        if (!cookies) {
-            res.status(400).send('Invalid credential ');
-        }
-        let isValideTokken = await jwt.verify(cookies.token, '1234D');
-        const loggedInUser = await User.findById({ _id: isValideTokken._id });
-
+        const loggedInUser = await User.findOne({ emailId: req.body.email });
         if (loggedInUser) {
             res.send(loggedInUser);
         } else {
@@ -101,17 +95,10 @@ app.get('/profile', async (req, res) => {
 });
 
 // Filter the user with the emailId or else. by using the find method of the mongoose. 
-app.get('/user', async (req, res) => {
-    const userEmail = req.body.email;
-    console.log('useremail', userEmail);
+app.get('/user', userAuth, async (req, res) => {
     try {
-        const user = await User.findOne({ emailId: userEmail });
-        if (user || user.length > 0) {
-            res.send(user);
-        } else {
-            res.status(404).send("User not found");
-
-        }
+        const user = req.user;
+        res.send(user);
     } catch (error) {
         console.log('test000000', error);
 
@@ -137,7 +124,7 @@ app.get('/feed', userAuth, async (req, res) => {
 });
 
 // Creating Delete api that that delete the user from the DB using the _id
-app.delete('/user_delete', async (req, res) => {
+app.delete('/user_delete', userAuth, async (req, res) => {
     const userId = req?.body?.userId;
     try {
         const deletedUser = await User.findByIdAndDelete({ _id: userId });

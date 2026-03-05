@@ -23,7 +23,9 @@ connectDB().
 // Middle ware that will convert the json into javascript object that can under stand by the server. 
 app.use(express.json());
 // cookies parser;
-
+/*
+Cookie parser  will help to read the cookie parser and use it in the application. 
+*/
 app.use(cookieParser());
 
 // Creating and storing the user information into the DB. 
@@ -53,7 +55,9 @@ app.post('/signup', async (req, res) => {
     }
 
 });
-
+/* IN method all the callbacks made to asyn function which always return the promise.
+Reason: finding the particular or all the user require the db filteration hence it take time which lead to provide the response in some time but always return something which might be perfect response or error. 
+*/
 // login api,
 app.post('/login', async (req, res) => {
     // backend level authetication 
@@ -66,7 +70,8 @@ app.post('/login', async (req, res) => {
             throw new Error("Password is not valid");
         } else {
             // sending cookie along side after login
-            const token = jwt.sign({ _id: userFound._id }, '1234D');
+            const token = await userFound.getJWT();
+            console.log('token_with ath',await userFound.getJWT());
             res.cookie('token', token);
             res.send("Login successfully");
         }

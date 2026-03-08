@@ -15,5 +15,12 @@ const validation = (requestData) => {
 
 
 }
+const validateUpdateData = (req) => {
+    const propToUpdate = ['age', 'education', 'profilePic', 'skills', 'education'];
+    let reqbodyKeys = Object.keys(req.body);
 
-module.exports = { validation }
+    const fieldNotAllowedToUpdate = reqbodyKeys.filter((key) => !propToUpdate.includes(key));
+    if (fieldNotAllowedToUpdate.length > 0) throw new Error(`Following fields are not allowed to update: ${fieldNotAllowedToUpdate}`);
+}
+
+module.exports = { validation, validateUpdateData }

@@ -10,7 +10,6 @@ let userAuth = async (req, res, next) => {
         const isUserExit = await User.findById(decodedObj._id);
         if (!isUserExit) throw new Error('Invalid token');
 
-        console.log('Testing_middleware');
         // setting the req.user with user data
         req.user = isUserExit;
         next();

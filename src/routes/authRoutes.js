@@ -3,6 +3,7 @@ const authRouter = express.Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../model/user');
 const { validation } = require('../utils/validator');
+const { userAuth } = require('../middlewares/auth_middleware');
 
 // Creating and storing the user information into the DB. 
 authRouter.post('/signup', async (req, res) => {
@@ -53,6 +54,27 @@ authRouter.post('/logout', async (req, res) => {
     } catch (error) {
         req.status(500).json({ error: error.message });
     }
-})
+});
+
+// update forget password
+authRouter.put('/resetPassword', userAuth, async (req, res) => {
+    try {
+        // Check old password
+        let userFound = req.user;
+        const isOldPasswordValid = await userFound.decrptedPwd(req.body.oldPassword);
+        if (!isOldPasswordValid) throw new Error('Old password is not valid');
+        // update password
+        validation(req.body);
+        const salt = bcrypt.genSaltSync(10);
+        const hashNewPassword = bcrypt.hashSync(req.body.newPassword, salt);
+        userFound['password'] = hashNewPassword;
+        userFound.save();
+        // save the changes
+        res.status(200).json({ message: 'Password has been updated' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+});
 
 module.exports = authRouter;

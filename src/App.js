@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 const { connectDB } = require('./config/database.js');
-const User = require('./model/user.js');
 const bcrypt = require('bcrypt');
 const { validation } = require('./validator/validator.js');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const { userAuth } = require('./middlewares/auth_middleware.js');
+const { User } = require('./model/user.js');
 
 connectDB().
     then(() => {
@@ -29,56 +29,46 @@ Cookie parser  will help to read the cookie parser and use it in the application
 app.use(cookieParser());
 
 // Creating and storing the user information into the DB. 
-
 app.post('/signup', async (req, res) => {
-
-
     try {
         validation(req.body);
-        const { password } = req.body; // write now pwd is not hashed from the client side.
+        const salt = bcrypt.genSaltSync(10);
+        const hashPassword = bcrypt.hashSync(req.body.password, salt);
 
-        let hashPassword = await bcrypt.hash(password, 10);
-
-
-
-        //  Creating the new instance from the user model and data which pass from the end user ( like UI, postman );
-        const userDetails = new User({
+        const userModel = new User({
             ...req.body,
             password: hashPassword
         });
-        await userDetails.save();
-        res.send("user add done");  // sending the request to the client who made the request.
+
+        await userModel.save();
+        res.status(200).json({ response: 'User Successfully register' });
+
     } catch (error) {
-        console.log('test3656565', error?.errorResponse);
-
-        res.status(400).send(error.message);
+        res.status(500).json({ error: error.message });
     }
-
 });
+
+
 /* IN method all the callbacks made to asyn function which always return the promise.
 Reason: finding the particular or all the user require the db filteration hence it take time which lead to provide the response in some time but always return something which might be perfect response or error. 
 */
 // login api,
 app.post('/login', async (req, res) => {
-    // backend level authetication 
-    const userFound = await User.findOne({ emailId: req.body.emailId });
     try {
-        console.log('userFound', userFound);
-        if (!userFound) throw new Error("Invalid Credential");
-        const isPasswordValid = await bcrypt.compare(req.body.password, userFound.password);
-        if (!isPasswordValid) {
-            throw new Error("Password is not valid");
+        const userFind = await User.findOne({ emailId: req.body.emailId });
+        if (!userFind) throw new Error('User does not exit');
+        let isPasswordValid = userFind.decrptedPwd(userFind.password)
+        if (isPasswordValid) {
+            // Adding the logic to authenticate the token
+            const token = await userFind.getJWT();
+            res.cookie('token', token)
+            res.status(200).json({ status: isPasswordValid });
         } else {
-            // sending cookie along side after login
-            const token = await userFound.getJWT();
-            console.log('token_with ath',await userFound.getJWT());
-            res.cookie('token', token);
-            res.send("Login successfully");
+            res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
         }
 
     } catch (error) {
-        res.status(400).send("Error occured", error);
-
+        res.status(500).json({ error: error.message })
     }
 });
 
@@ -86,31 +76,13 @@ app.post('/login', async (req, res) => {
 
 app.get('/profile', userAuth, async (req, res) => {
     try {
-        const loggedInUser = await User.findOne({ emailId: req.body.email });
-        if (loggedInUser) {
-            res.send(loggedInUser);
-        } else {
-            res.status(404).send('user not found');
-        }
-
+        res.status(200).send(req.user);
     } catch (error) {
-        res.status(400).send('user not found');
+        res.status(400).send(error.message);
 
     }
 });
 
-// Filter the user with the emailId or else. by using the find method of the mongoose. 
-app.get('/user', userAuth, async (req, res) => {
-    try {
-        const user = req.user;
-        res.send(user);
-    } catch (error) {
-        console.log('test000000', error);
-
-        res.status(400).send("Error occured", error.message);
-    }
-
-});
 
 // Getting all the user at once. 
 
@@ -150,7 +122,8 @@ app.delete('/user_delete', userAuth, async (req, res) => {
 
 // Update the Data for the particular UserId
 
-app.patch('/user_update/:userId', async (req, res) => {
+app.patch('/user_update/:userId', userAuth, async (req, res) => {
+
     const { userId } = req?.params;
     console.log('userId', userId);
     const updatedData = req.body;

@@ -1,8 +1,5 @@
 const express = require('express');
 const authRouter = express.Router();
-const bcrypt = require('bcrypt');
-const { User } = require('../model/user');
-const { validation } = require('../utils/validator');
 const { userAuth } = require('../middlewares/auth_middleware');
 const authController = require('../controller/authController');
 

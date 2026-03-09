@@ -1,8 +1,6 @@
 const express = require('express');
 const profileRouter = express.Router();
-const { User } = require('../model/user');
 const { userAuth } = require('../middlewares/auth_middleware');
-const { validateUpdateData } = require('../utils/validator');
 const profileController = require('../controller/profileController');
 
 // get the profile

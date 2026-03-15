@@ -18,7 +18,7 @@ const userSchema = new Schema({
     },
     lastName: {
         type: String,
-        required: [true, 'User lastName isnbhjghj required'],
+        required: [true, 'User lastName required'],
         validator: (value) => {
             if (value.trim().length < 3) throw new Error("lastName should be grater then 3 characters");
         },

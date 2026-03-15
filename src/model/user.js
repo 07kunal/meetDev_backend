@@ -84,9 +84,20 @@ const userSchema = new Schema({
     }
 },
     {
+        virtuals: {
+            fullName: {
+                get() {
+                    return this.firstName +
+                        ' ' + this.lastName;
+                }
+            }
+        }
+    },
+    {
         timestamps: true
     }
 );
+
 /* 
 This is the another advantage of using mongoose, In this when the model has created then mongoose provide another methods (actual method ) through this different method can be form. These method later use in the API method. 
 

@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
-
+// ref: help to create the reference with the another schema here it User
 const connectionRequest = new mongoose.Schema({
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref:'User',
         required: true,
     },
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref:'User',
         required: true
     },
     status: {

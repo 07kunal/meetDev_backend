@@ -5,9 +5,33 @@ const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "pr
 const userFeedController = {
     userFeeds: async (req, res) => {
         try {
-            const usersData = await User.find({});
-            if (!usersData) throw new Error('Users data not appear');
-            res.status(200).send(usersData);
+            const page = parseInt(req.query.page) || 1;
+            let limit = parseInt(req.query.limit) || 10;
+            limit = limit > 50 ? 50 : 10
+            let skip = (page - 1) * limit;
+            const loggedInUser = req.user;
+            //Need to filter those feed in which loggedIn User has sent or received the connectionRequest
+            const findAlreadySentRequest = await ConnectRequestModel.find({
+                $or: [
+                    { fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }
+                ]
+            }).select("fromUserId toUserId");
+            const hideUsersFromFeed = new Set();
+            findAlreadySentRequest.forEach((req) => {
+                hideUsersFromFeed.add(req.fromUserId.toString());
+                hideUsersFromFeed.add(req.toUserId.toString());
+
+            })
+            const findsUserFeed = await User.find({
+                $and: [
+                    { _id: { $nin: Array.from(hideUsersFromFeed) } },
+                    { _id: { $ne: loggedInUser._id } }
+                ]
+            }).select(UserAllowedData).skip(skip).limit(limit);
+            // console.log(hideUsersFromFeed);
+            // const usersData = await User.find({});
+            // if (!usersData) throw new Error('Users data not appear');
+            res.status(200).send(findsUserFeed);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -38,6 +62,7 @@ const userFeedController = {
             })
         }
     },
+    // Get all the connections of the loggedIn userl
     userConnections: async (req, res) => {
         try {
             let loggedInUser = req.user;

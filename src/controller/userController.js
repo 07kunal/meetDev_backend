@@ -2,12 +2,13 @@ const ConnectRequestModel = require('../model/connectionRequest');
 const { User } = require('../model/user');
 
 const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "profilePic"];
-const userFeedController = {
+const userController = {
     userFeeds: async (req, res) => {
         try {
             const page = parseInt(req.query.page) || 1;
             let limit = parseInt(req.query.limit) || 10;
-            limit = limit > 50 ? 50 : 10
+            console.log('limit',limit);
+            limit = limit < 50 ? limit : 10
             let skip = (page - 1) * limit;
             const loggedInUser = req.user;
             //Need to filter those feed in which loggedIn User has sent or received the connectionRequest
@@ -94,8 +95,32 @@ const userFeedController = {
                 error: error.message
             })
         }
+    },
+    // Get all the ignored/rejected/interested connection request sendBy loggedIn User
+    userRequestHistory: async (req, res) => {
+        try {
+            const loggedInUser = req.user;
+            const ignoredRejectedRequest = await ConnectRequestModel.find({
+                $or: [
+                    { fromUserId: loggedInUser._id, status: 'ignored' },
+                    { fromUserId: loggedInUser._id, status: 'rejected' },
+                    { fromUserId: loggedInUser._id, status: 'interested' },
+
+
+                ]
+            }).populate('toUserId', UserAllowedData);
+            console.log('data===', ignoredRejectedRequest);
+            res.status(200).json({
+                data: ignoredRejectedRequest
+            })
+
+        } catch (error) {
+            res.status(500).json({
+                error: error.message
+            });
+        }
     }
 
 }
 
-module.exports = userFeedController
+module.exports = userController

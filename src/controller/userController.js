@@ -1,4 +1,4 @@
-const ConnectRequestModel = require('../model/connectionRequest');
+const ConnectionRequestModel = require('../model/connectionRequest');
 const { User } = require('../model/user');
 
 const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "profilePic"];
@@ -7,12 +7,12 @@ const userController = {
         try {
             const page = parseInt(req.query.page) || 1;
             let limit = parseInt(req.query.limit) || 10;
-            console.log('limit',limit);
+            console.log('limit', limit);
             limit = limit < 50 ? limit : 10
             let skip = (page - 1) * limit;
             const loggedInUser = req.user;
             //Need to filter those feed in which loggedIn User has sent or received the connectionRequest
-            const findAlreadySentRequest = await ConnectRequestModel.find({
+            const findAlreadySentRequest = await ConnectionRequestModel.find({
                 $or: [
                     { fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }
                 ]
@@ -41,7 +41,7 @@ const userController = {
     userPendingRequest: async (req, res) => {
         try {
             let loggedInUser = req.user;
-            let loggedInUserPendingRequest = await ConnectRequestModel.find({
+            let loggedInUserPendingRequest = await ConnectionRequestModel.find({
                 toUserId: loggedInUser._id,
                 status: 'interested'
             }).populate("fromUserId", UserAllowedData);
@@ -67,7 +67,7 @@ const userController = {
     userConnections: async (req, res) => {
         try {
             let loggedInUser = req.user;
-            let myConnections = await ConnectRequestModel.find({
+            let myConnections = await ConnectionRequestModel.find({
                 $or: [
                     {
                         fromUserId: loggedInUser._id, status: 'accepted'
@@ -96,30 +96,57 @@ const userController = {
             })
         }
     },
-    // Get all the ignored/rejected/interested connection request sendBy loggedIn User
+ 
     userRequestHistory: async (req, res) => {
         try {
-            const loggedInUser = req.user;
-            const ignoredRejectedRequest = await ConnectRequestModel.find({
-                $or: [
-                    { fromUserId: loggedInUser._id, status: 'ignored' },
-                    { fromUserId: loggedInUser._id, status: 'rejected' },
-                    { fromUserId: loggedInUser._id, status: 'interested' },
+            const userId = req.user._id;
+            const [
+                ignoredByMe,
+                sentInterested,
+                rejectedByMe,
+                rejectedMe
+            ] = await Promise.all([
 
+                // ✅ FIXED: ignored is fromUserId
+                ConnectionRequestModel.find({
+                    fromUserId: userId,
+                    status: "ignored"
+                }).populate("toUserId", UserAllowedData),
 
-                ]
-            }).populate('toUserId', UserAllowedData);
-            console.log('data===', ignoredRejectedRequest);
-            res.status(200).json({
-                data: ignoredRejectedRequest
-            })
+                // interested sent
+                ConnectionRequestModel.find({
+                    fromUserId: userId,
+                    status: "interested"
+                }).populate("toUserId", UserAllowedData),
 
+                // rejected by logged-in user (incoming)
+                ConnectionRequestModel.find({
+                    toUserId: userId,
+                    status: "rejected"
+                }).populate("fromUserId", UserAllowedData),
+
+                // user got rejected
+                ConnectionRequestModel.find({
+                    fromUserId: userId,
+                    status: "rejected"
+                }).populate("toUserId", UserAllowedData)
+
+            ]);
+            res.json({
+                success: true,
+                data: {
+                    ignoredByMe,
+                    sentInterested,
+                    rejectedByMe,
+                    rejectedMe
+                }
+            });
         } catch (error) {
             res.status(500).json({
                 error: error.message
             });
         }
-    }
+    },
 
 }
 

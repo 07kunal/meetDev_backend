@@ -1,4 +1,4 @@
-const ConnectRequestModel = require('../model/connectionRequest');
+const ConnectionRequestModel = require('../model/connectionRequest');
 const { User } = require('../model/user');
 
 class connectionRequest {
@@ -21,7 +21,7 @@ class connectionRequest {
                 return res.status(404).json({ message: "Invalid status type:" + requestStatus });
             };
             // Checking whether the different user make connectionReqest for the same user.
-            const existingConnectionRequest = await ConnectRequestModel.findOne({
+            const existingConnectionRequest = await ConnectionRequestModel.findOne({
                 $or: [
                     { fromUserId, toUserId },
                     { fromUserId: toUserId, toUserId: fromUserId }
@@ -31,7 +31,7 @@ class connectionRequest {
 
                 return res.status(400).json({ message: 'Connection requst already exist' });
             };
-            const connectionReqeuestObj = new ConnectRequestModel({
+            const connectionReqeuestObj = new ConnectionRequestModel({
                 fromUserId,
                 toUserId,
                 status
@@ -61,7 +61,7 @@ class connectionRequest {
             };
             const userLoggedIn = req.user;
 
-            let connectionRequestFound = await ConnectRequestModel.findOne({
+            let connectionRequestFound = await ConnectionRequestModel.findOne({
                 _id: requestId,
                 status: 'interested',
                 toUserId: userLoggedIn._id

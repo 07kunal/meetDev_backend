@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-
+const dns = require('node:dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']); 
 /* 
 This above URL return the promise hence it's good practice to wrap this function in async func.
 

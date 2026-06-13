@@ -4,6 +4,7 @@ const { connectDB } = require('./config/database.js');
 const cookieParser = require('cookie-parser');
 const indexRouter = require('./routes/index.js');
 
+const cors = require('cors')
 
 connectDB().
     then(() => {
@@ -16,7 +17,11 @@ connectDB().
         });
     }).
     catch((err) => console.log('err', err));
-
+// Adds headers: Access-Control-Allow-Origin: *
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}));
 // Middle ware that will convert the json into javascript object that can under stand by the server. 
 app.use(express.json());
 // cookies parser;

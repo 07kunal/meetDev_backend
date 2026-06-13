@@ -28,11 +28,16 @@ const authController = {
             const userFind = await User.findOne({ emailId: req.body.emailId });
             if (!userFind) throw new Error('User does not exit');
             let isPasswordValid = await userFind.decrptedPwd(req.body.password);
-            if (isPasswordValid) {
+            if (isPasswordValid && userFind) {
                 // Adding the logic to authenticate the token
                 const token = await userFind.getJWT();
-                res.cookie('token', token)
-                res.status(200).json({ status: isPasswordValid });
+                res.cookie('token', token);
+                const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills } = userFind;
+                // console.log('userDATA',userData);
+                res.status(200).json({
+                    status: isPasswordValid,
+                    data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills }
+                });
             } else {
                 res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
             }

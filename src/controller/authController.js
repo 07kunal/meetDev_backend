@@ -26,7 +26,6 @@ const authController = {
     userLogin: async (req, res) => {
         try {
             const userFind = await User.findOne({ emailId: req.body.emailId });
-            if (!userFind) throw new Error('User does not exit');
             let isPasswordValid = await userFind.decrptedPwd(req.body.password);
             if (isPasswordValid && userFind) {
                 // Adding the logic to authenticate the token
@@ -39,7 +38,8 @@ const authController = {
                     data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills }
                 });
             } else {
-                res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
+              throw new Error('Invalid User and password');
+                // res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
             }
 
         } catch (error) {

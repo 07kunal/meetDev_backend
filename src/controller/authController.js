@@ -38,7 +38,7 @@ const authController = {
                     data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills }
                 });
             } else {
-              throw new Error('Invalid User and password');
+                throw new Error('Invalid User and password');
                 // res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
             }
 
@@ -49,7 +49,12 @@ const authController = {
     userLogout: async (req, res) => {
         try {
             res.clearCookie('token');
-            res.status(200).send({ logout: true, message: 'User logout successfully' });
+            res.status(200).send({
+                data: {
+                    logOutStatus: true,
+                    message: 'User logout successfully'
+                },
+            });
         } catch (error) {
             req.status(500).json({ error: error.message });
         }

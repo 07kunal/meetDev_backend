@@ -84,6 +84,10 @@ const userSchema = new Schema({
     }
 },
     {
+        timestamps: true,
+
+        toObject: { virtuals: true },
+        toJSON: { virtuals: true },
         virtuals: {
             fullName: {
                 get() {
@@ -92,10 +96,8 @@ const userSchema = new Schema({
                 }
             }
         }
-    },
-    {
-        timestamps: true
     }
+
 );
 
 /* 

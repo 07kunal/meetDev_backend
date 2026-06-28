@@ -7,7 +7,6 @@ const userController = {
         try {
             const page = parseInt(req.query.page) || 1;
             let limit = parseInt(req.query.limit) || 10;
-            console.log('limit', limit);
             limit = limit < 50 ? limit : 10
             let skip = (page - 1) * limit;
             const loggedInUser = req.user;
@@ -18,6 +17,7 @@ const userController = {
                 ]
             }).select("fromUserId toUserId");
             const hideUsersFromFeed = new Set();
+            // console.log('hasUsersFromFeed',hideUsersFromFeed);
             findAlreadySentRequest.forEach((req) => {
                 hideUsersFromFeed.add(req.fromUserId.toString());
                 hideUsersFromFeed.add(req.toUserId.toString());

@@ -21,8 +21,9 @@ let userAuth = async (req, res, next) => {
                 message: error.message
             });
         } else {
-            res.status(404).json({
-                status: 404,
+
+            res.status(401).json({
+                status: 401,
                 message: error.message
             });
 

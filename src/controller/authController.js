@@ -31,11 +31,11 @@ const authController = {
                 // Adding the logic to authenticate the token
                 const token = await userFind.getJWT();
                 res.cookie('token', token);
-                const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills } = userFind;
+                const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills,id } = userFind;
                 // console.log('userDATA',userData);
                 res.status(200).json({
                     status: isPasswordValid,
-                    data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills }
+                    data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills ,id}
                 });
             } else {
                 throw new Error('Invalid User and password');

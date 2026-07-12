@@ -28,7 +28,7 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        required: [true, 'Please mention the Gender'],
+        // required: [true, 'Please mention the Gender'],
         validator: (value) => {
             if (!['Male', 'Female', 'others'].includes(value)) throw new Error('Gender is not valid');
         }
@@ -36,7 +36,7 @@ const userSchema = new Schema({
     },
     age: {
         type: Number,
-        required: [true, 'Please Enter your Name'],
+        // required: [true, 'Please Enter your Name'],
         min: [0, 'Age cannot be zero'],
         max: [120, 'Age should be not be greater then 120 character']
 
@@ -55,15 +55,15 @@ const userSchema = new Schema({
     },
     education: {
         type: Array,
-        required: [true, 'Atleast one level education is required'],
-        validate: (value) => {
-            if (value.length === 0) throw new Error('Should atleast give one level of education');
-        }
+        // required: [true, 'Atleast one level education is required'],
+        // validate: (value) => {
+        //     if (value.length === 0) throw new Error('Should atleast give one level of education');
+        // }
 
     },
     address: {
         type: String,
-        required: true,
+        // required: true,
 
 
     },
@@ -74,13 +74,22 @@ const userSchema = new Schema({
     },
     skills: {
         type: Array,
-        required: true
+        // required: true
 
     },
     password: {
         type: String,
         required: true
 
+    },
+    userName: {
+        type: String,
+        index: true,
+        unique: true,
+        required: [true, 'User name is required'],
+        validator: (value) => {
+            if (value.trim().length < 3) throw new Error("user name should be grater then 3 characters");
+        },
     }
 },
     {

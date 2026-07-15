@@ -81,15 +81,6 @@ const userSchema = new Schema({
         type: String,
         required: true
 
-    },
-    userName: {
-        type: String,
-        index: true,
-        unique: true,
-        required: [true, 'User name is required'],
-        validator: (value) => {
-            if (value.trim().length < 3) throw new Error("user name should be grater then 3 characters");
-        },
     }
 },
     {

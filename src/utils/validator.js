@@ -1,7 +1,7 @@
 const validator = require('validator');
 
 const validation = (requestData) => {
-    const { firstName, lastName, emailId, password, newPassword , userName} = requestData;
+    const { firstName, lastName, emailId, password, newPassword} = requestData;
 
     if (newPassword) {
 

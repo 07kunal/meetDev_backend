@@ -5,11 +5,11 @@ const profileController = {
     getProfile: async (req, res) => {
         try {
             let userFind = req.user;
-            const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, userName } = userFind;
+            const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills} = userFind;
             // console.log('userDATA',userData);
             res.status(200).json({
                 status: true,
-                data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills,userName }
+                data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills}
             });
         } catch (error) {
             res.status(400).json({ "Error": error.message });

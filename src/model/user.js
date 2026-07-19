@@ -97,6 +97,9 @@ const userSchema = new Schema({
                 }
             }
         }
+    },
+    {
+        strict: 'throw' // Throws an error if an undefined field is passed
     }
 
 );

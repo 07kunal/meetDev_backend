@@ -80,9 +80,14 @@ const authController = {
             userFound['password'] = hashNewPassword;
             userFound.save();
             // save the changes
-            res.status(200).json({ message: 'Password has been updated' });
+            res.status(200).json({
+                data:{
+                    status: true,
+                    message: 'Password has been updated'
+                }
+             });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: error.message });
         }
 
     }

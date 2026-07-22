@@ -44,8 +44,8 @@ const authController = {
                     data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id }
                 });
             } else {
-                throw new Error('Invalid User and password');
-                // res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
+                // throw new Error('Invalid User and password');
+                res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
             }
 
         } catch (error) {
@@ -79,13 +79,16 @@ const authController = {
             const hashNewPassword = bcrypt.hashSync(req.body.newPassword, salt);
             userFound['password'] = hashNewPassword;
             userFound.save();
+            res.cookie("token", null, {
+                expires: new Date(Date.now()),
+            });
             // save the changes
             res.status(200).json({
-                data:{
+                data: {
                     status: true,
                     message: 'Password has been updated'
                 }
-             });
+            });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

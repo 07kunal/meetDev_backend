@@ -17,12 +17,9 @@ const validation = (requestData) => {
         if (!validator.isEmail(emailId)) throw new Error('Email Address is inValid');
         if (!validator.isStrongPassword(password)) throw new Error('Password is not strong');
     }
-
-
-
 }
 const validateUpdateData = (req) => {
-    const propToUpdate = ['age', 'education', 'profilePic', 'skills', 'education'];
+    const propToUpdate = ['age', 'education', 'profilePic', 'skills'];
     let reqbodyKeys = Object.keys(req.body);
 
     const fieldNotAllowedToUpdate = reqbodyKeys.filter((key) => !propToUpdate.includes(key));

@@ -40,9 +40,10 @@ const profileController = {
             const loggedInUser = req.user;
             Object.keys(req.body).forEach((key) => loggedInUser[key] = req.body[key]);
             await loggedInUser.save();
+            const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills} = loggedInUser;
             res.status(200).json({
                 message: 'User data update successfully',
-                data: loggedInUser
+                data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills}
             });
 
         } catch (error) {

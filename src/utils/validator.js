@@ -19,7 +19,7 @@ const validation = (requestData) => {
     }
 }
 const validateUpdateData = (req) => {
-    const propToUpdate = ['age', 'education', 'profilePic', 'skills'];
+    const propToUpdate = ['age', 'education', 'profilePic', 'skills','address'];
     let reqbodyKeys = Object.keys(req.body);
 
     const fieldNotAllowedToUpdate = reqbodyKeys.filter((key) => !propToUpdate.includes(key));

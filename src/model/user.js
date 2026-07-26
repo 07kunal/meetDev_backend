@@ -30,9 +30,13 @@ const userSchema = new Schema({
     gender: {
         type: String,
         // required: [true, 'Please mention the Gender'],
-        validator: (value) => {
-            if (!['Male', 'Female', 'others'].includes(value)) throw new Error('Gender is not valid');
-        }
+        enum: {
+            values: ["male", "female"],
+            message: `{VALUE} is incorrect status type`
+        },
+        // validator: (value) => {
+        //     if (!['Male', 'Female', 'others'].includes(value)) throw new Error('Gender is not valid');
+        // }
 
     },
     age: {

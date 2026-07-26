@@ -37,7 +37,7 @@ const userController = {
             res.status(500).json({ error: error.message });
         }
     },
-    // Get all the pending request for the loggedin request.
+    // Get all the pending request ( as recevied as intereset) for the loggedin request.
     userPendingRequest: async (req, res) => {
         try {
             let loggedInUser = req.user;
@@ -96,7 +96,8 @@ const userController = {
             })
         }
     },
- 
+    // user send the connection request 
+
     userRequestHistory: async (req, res) => {
         try {
             const userId = req.user._id;

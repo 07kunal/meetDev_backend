@@ -52,7 +52,7 @@ class connectionRequest {
     // reviewing the request
     async reviewingConnectionRequest(req, res) {
         try {
-            let requestId = req.params.requestId;
+            let requestId = req.params.requestId;  // connection request
             let status = req.params.status;
             let allowedStatusToPass = ['accepted', 'rejected'];
             // Only allowed status to be updated

@@ -40,11 +40,15 @@ const userController = {
     // Get all the pending request ( as recevied as intereset) for the loggedin request.
     userPendingRequest: async (req, res) => {
         try {
+            const page = parseInt(req.query.page) || 1;
+            let limit = parseInt(req.query.limit) || 10;
+            limit = limit < 50 ? limit : 10
+            let skip = (page - 1) * limit;
             let loggedInUser = req.user;
             let loggedInUserPendingRequest = await ConnectionRequestModel.find({
                 toUserId: loggedInUser._id,
                 status: 'interested'
-            }).populate("fromUserId", UserAllowedData);
+            }).populate("fromUserId", UserAllowedData).skip(skip).limit(limit);
 
             if (loggedInUserPendingRequest.length <= 0) {
                 return res.status(200).json({

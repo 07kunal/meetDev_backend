@@ -45,6 +45,11 @@ const userController = {
             limit = limit < 50 ? limit : 10
             let skip = (page - 1) * limit;
             let loggedInUser = req.user;
+            // Get total count first
+            const totalItems = await ConnectionRequestModel.countDocuments({
+                toUserId: loggedInUser._id,
+                status: 'interested'
+            });
             let loggedInUserPendingRequest = await ConnectionRequestModel.find({
                 toUserId: loggedInUser._id,
                 status: 'interested'
@@ -53,14 +58,20 @@ const userController = {
             if (loggedInUserPendingRequest.length <= 0) {
                 return res.status(200).json({
                     message: 'No pending connection request',
-                    data: loggedInUserPendingRequest
-                })
-            };
+                    data: [],
+                    totalItems,
+                    page,
+                    limit
+                });
+            }
 
             res.status(200).json({
-                message: 'following are the pending requests',
-                data: loggedInUserPendingRequest
-            })
+                message: 'Following are the pending requests',
+                data: loggedInUserPendingRequest,
+                totalItems,
+                page,
+                limit
+            });
         } catch (error) {
             res.status(500).json({
                 error: error.message

@@ -28,7 +28,6 @@ const userController = {
                     { _id: { $ne: loggedInUser._id } }
                 ]
             });
-            console.log('totalCount', findsUserFeedCount);
             const findsUserFeed = await User.find({
                 $and: [
                     { _id: { $nin: Array.from(hideUsersFromFeed) } },

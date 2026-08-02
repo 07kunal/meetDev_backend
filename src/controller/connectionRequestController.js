@@ -10,7 +10,6 @@ class connectionRequest {
             let status = req.params.status;
             // Checking whether toUserId exit or not.
             let toUserExit = await User.findById(toUserId);
-            console.log('toUserExit', toUserExit);
             if (!toUserExit) {
                 return res.status(400).json({
                     message: "User is not found"
@@ -43,7 +42,6 @@ class connectionRequest {
                 data: data
             });
 
-            console.log('connectionRequestObj', connectionReqeuestObj);
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
@@ -63,7 +61,8 @@ class connectionRequest {
 
             let connectionRequestFound = await ConnectionRequestModel.findOne({
                 _id: requestId,
-                status: 'interested',
+                // $in is cleaner when you’re just checking if a field matches one of several values.
+                status: { $in: ["interested", "accepted"] },
                 toUserId: userLoggedIn._id
             });
 
@@ -75,13 +74,12 @@ class connectionRequest {
             };
 
             connectionRequestFound.status = status;
-            console.log('connectionData', connectionRequestFound);
             const data = await connectionRequestFound.save();
 
 
             res.status(201).json({
                 message: (status === 'accepted' ? `${userLoggedIn.firstName + ' ' + userLoggedIn.lastName} accepted the connection request` : `${userLoggedIn.firstName + '' + userLoggedIn.lastName} rejected the connection request`),
-                data: data
+                data: data?.status
 
             })
         } catch (error) {
@@ -90,5 +88,24 @@ class connectionRequest {
             })
         }
     }
+    async deleteConnectionRequest(req, res) {
+        try {
+            let requestId = req.params.requestId;
+            const deletedConnection = await ConnectionRequestModel.findByIdAndDelete({ _id: requestId });
+            if (deletedConnection) {
+
+                res.send("Selected Connection Request has been delete");
+            } else {
+                res.status(400).send("Error occured");
+
+            }
+
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+
 };
 module.exports = connectionRequest;

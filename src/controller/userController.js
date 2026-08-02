@@ -100,7 +100,19 @@ const userController = {
     // Get all the connections of the loggedIn userl
     userConnections: async (req, res) => {
         try {
+            const page = parseInt(req.query.page) || 1;
+            let limit = parseInt(req.query.limit) || 10;
+            limit = limit < 50 ? limit : 10
+            let skip = (page - 1) * limit;
             let loggedInUser = req.user;
+            // Step 1: Count total connections
+            const totalConnectionsCount = await ConnectionRequestModel.countDocuments({
+                $or: [
+                    { fromUserId: loggedInUser._id, status: 'accepted' },
+                    { toUserId: loggedInUser._id, status: 'accepted' }
+                ]
+            });
+            // step 2: Find the details of my connection
             let myConnections = await ConnectionRequestModel.find({
                 $or: [
                     {
@@ -110,8 +122,11 @@ const userController = {
                         toUserId: loggedInUser._id, status: 'accepted'
                     }
                 ]
-            }).populate('fromUserId', UserAllowedData).
-                populate('toUserId', UserAllowedData);
+            }).populate('fromUserId', UserAllowedData)
+                .populate('toUserId', UserAllowedData)
+                .skip(skip)
+                .limit(limit)
+                .lean();
             // Include both connected user and requestId
             const data = myConnections.map(item => {
                 const connectedUser = item.fromUserId._id.toString() === loggedInUser._id.toString()
@@ -120,13 +135,17 @@ const userController = {
 
                 return {
                     requestId: item._id,   // connection request ID
-                    user: connectedUser    // connected user data
+                    data: connectedUser    // connected user data
                 };
             });
 
+            // Step 4: Return with pagination metadata
             res.status(200).json({
                 message: 'Logged in connections',
-                data
+                data,
+                totalCount: totalConnectionsCount,
+                page,
+                limit
             });
 
         } catch (error) {

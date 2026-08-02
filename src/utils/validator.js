@@ -1,7 +1,7 @@
 const validator = require('validator');
 
 const validation = (requestData) => {
-    const { firstName, lastName, emailId, password, newPassword } = requestData;
+    const { firstName, lastName, emailId, password, newPassword} = requestData;
 
     if (newPassword) {
 
@@ -17,12 +17,9 @@ const validation = (requestData) => {
         if (!validator.isEmail(emailId)) throw new Error('Email Address is inValid');
         if (!validator.isStrongPassword(password)) throw new Error('Password is not strong');
     }
-
-
-
 }
 const validateUpdateData = (req) => {
-    const propToUpdate = ['age', 'education', 'profilePic', 'skills', 'education'];
+    const propToUpdate = ['age', 'education', 'profilePic', 'skills','address'];
     let reqbodyKeys = Object.keys(req.body);
 
     const fieldNotAllowedToUpdate = reqbodyKeys.filter((key) => !propToUpdate.includes(key));

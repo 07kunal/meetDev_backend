@@ -17,10 +17,16 @@ const authController = {
             });
 
             await userModel.save();
-            res.status(200).json({ response: 'User Successfully register' });
+            res.status(200).json({
+                data: "User sign up successfully"
+            });
 
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            if (error.code === 11000) {
+                res.status(400).send({ message: "Email already exists" });
+            } else {
+                res.status(400).send({ message: error.message });
+            }
         }
     },
     userLogin: async (req, res) => {
@@ -31,15 +37,15 @@ const authController = {
                 // Adding the logic to authenticate the token
                 const token = await userFind.getJWT();
                 res.cookie('token', token);
-                const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills,id } = userFind;
+                const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id } = userFind;
                 // console.log('userDATA',userData);
                 res.status(200).json({
                     status: isPasswordValid,
-                    data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills ,id}
+                    data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id }
                 });
             } else {
-                throw new Error('Invalid User and password');
-                // res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
+                // throw new Error('Invalid User and password');
+                res.status(404).json({ status: isPasswordValid, message: 'Invalid password' });
             }
 
         } catch (error) {
@@ -49,8 +55,8 @@ const authController = {
     userLogout: async (req, res) => {
         try {
             res.cookie("token", null, {
-                    expires: new Date(Date.now()),
-                });
+                expires: new Date(Date.now()),
+            });
             res.status(200).send({
                 data: {
                     logOutStatus: true,
@@ -73,10 +79,18 @@ const authController = {
             const hashNewPassword = bcrypt.hashSync(req.body.newPassword, salt);
             userFound['password'] = hashNewPassword;
             userFound.save();
+            res.cookie("token", null, {
+                expires: new Date(Date.now()),
+            });
             // save the changes
-            res.status(200).json({ message: 'Password has been updated' });
+            res.status(200).json({
+                data: {
+                    status: true,
+                    message: 'Password has been updated'
+                }
+            });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: error.message });
         }
 
     }

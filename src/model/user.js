@@ -12,9 +12,10 @@ const userSchema = new Schema({
     firstName: {
         type: String,
         required: [true, 'User firstName is required'],
-        validator: (value) => {
-            if (value.trim().length < 3) throw new Error("firstName should be grater then 3 characters");
-        },
+        validate: {
+            validator: (value) => value.trim().length >= 3,
+            message: "firstName should be greater than 3 characters"
+        }
     },
     lastName: {
         type: String,
@@ -28,15 +29,19 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        required: [true, 'Please mention the Gender'],
-        validator: (value) => {
-            if (!['Male', 'Female', 'others'].includes(value)) throw new Error('Gender is not valid');
-        }
+        // required: [true, 'Please mention the Gender'],
+        enum: {
+            values: ["male", "female"],
+            message: `{VALUE} is incorrect status type`
+        },
+        // validator: (value) => {
+        //     if (!['Male', 'Female', 'others'].includes(value)) throw new Error('Gender is not valid');
+        // }
 
     },
     age: {
         type: Number,
-        required: [true, 'Please Enter your Name'],
+        // required: [true, 'Please Enter your Name'],
         min: [0, 'Age cannot be zero'],
         max: [120, 'Age should be not be greater then 120 character']
 
@@ -55,15 +60,15 @@ const userSchema = new Schema({
     },
     education: {
         type: Array,
-        required: [true, 'Atleast one level education is required'],
-        validate: (value) => {
-            if (value.length === 0) throw new Error('Should atleast give one level of education');
-        }
+        // required: [true, 'Atleast one level education is required'],
+        // validate: (value) => {
+        //     if (value.length === 0) throw new Error('Should atleast give one level of education');
+        // }
 
     },
     address: {
         type: String,
-        required: true,
+        // required: true,
 
 
     },
@@ -74,7 +79,7 @@ const userSchema = new Schema({
     },
     skills: {
         type: Array,
-        required: true
+        // required: true
 
     },
     password: {
@@ -96,6 +101,9 @@ const userSchema = new Schema({
                 }
             }
         }
+    },
+    {
+        strict: 'throw' // Throws an error if an undefined field is passed
     }
 
 );

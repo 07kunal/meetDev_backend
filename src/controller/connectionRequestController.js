@@ -91,7 +91,11 @@ class connectionRequest {
     async deleteConnectionRequest(req, res) {
         try {
             let requestId = req.params.requestId;
-            const deletedConnection = await ConnectionRequestModel.findByIdAndDelete({ _id: requestId });
+            // findOneAndDelete help to remove one item as per the given query
+            const deletedConnection = await ConnectionRequestModel.findOneAndDelete({
+                _id: requestId,
+                status: "rejected" ,
+            });
             if (deletedConnection) {
 
                 res.send("Selected Connection Request has been delete");

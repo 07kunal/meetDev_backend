@@ -5,10 +5,6 @@ const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "pr
 const userController = {
     userFeeds: async (req, res) => {
         try {
-            const page = parseInt(req.query.page) || 1;
-            let limit = parseInt(req.query.limit) || 10;
-            limit = limit < 50 ? limit : 10
-            let skip = (page - 1) * limit;
             const loggedInUser = req.user;
             //Need to filter those feed in which loggedIn User has sent or received the connectionRequest
             const findAlreadySentRequest = await ConnectionRequestModel.find({
@@ -22,34 +18,22 @@ const userController = {
                 hideUsersFromFeed.add(req.toUserId.toString());
 
             });
-            const findsUserFeedCount = await User.countDocuments({
-                $and: [
-                    { _id: { $nin: Array.from(hideUsersFromFeed) } },
-                    { _id: { $ne: loggedInUser._id } }
-                ]
-            });
             const findsUserFeed = await User.find({
                 $and: [
                     { _id: { $nin: Array.from(hideUsersFromFeed) } },
                     { _id: { $ne: loggedInUser._id } }
                 ]
-            }).select(UserAllowedData).skip(skip).limit(limit);
+            }).select(UserAllowedData);
             if (findsUserFeed.length <= 0) {
                 return res.status(200).json({
                     message: 'No Feed to shows',
                     data: [],
-                    totalCount: findsUserFeedCount,
-                    page: page,
-                    limit: limit
                 });
             }
             // res.status(200).send(findsUserFeed);
             res.status(200).json({
                 message: 'User feed',
-                totalCount: findsUserFeedCount,   // e.g. 12
-                page: page,                      // e.g. 1
-                limit: limit,                     // e.g. 10
-                data: findsUserFeed               // actual user records
+                data: findsUserFeed
             });
         } catch (error) {
             res.status(500).json({ error: error.message });

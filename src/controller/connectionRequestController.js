@@ -5,6 +5,7 @@ class connectionRequest {
     // sending the connnection request
     async sendingConnectionRequest(req, res) {
         try {
+            let userLoggedIn = req.user;
             let fromUserId = req.user._id;
             let toUserId = req.params.userId;
             let status = req.params.status;
@@ -38,8 +39,8 @@ class connectionRequest {
 
             const data = await connectionReqeuestObj.save();
             res.status(200).json({
-                message: 'Connection request has been sent',
-                data: data
+                message: (status === 'interested' ? `${userLoggedIn.firstName + ' ' + userLoggedIn.lastName} send the connection request` : `${userLoggedIn.firstName + '' + userLoggedIn.lastName} ignore the connection`),
+                data: data?.status
             });
 
         } catch (error) {
@@ -94,7 +95,7 @@ class connectionRequest {
             // findOneAndDelete help to remove one item as per the given query
             const deletedConnection = await ConnectionRequestModel.findOneAndDelete({
                 _id: requestId,
-                status: "rejected" ,
+                status: { $in: ["interested", "rejected"] },
             });
             if (deletedConnection) {
 

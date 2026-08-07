@@ -5,6 +5,10 @@ const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "pr
 const userController = {
     userFeeds: async (req, res) => {
         try {
+            const page = parseInt(req.query.page) || 1;
+            let limit = parseInt(req.query.limit) || 10;
+            limit = limit < 50 ? limit : 10
+            let skip = (page - 1) * limit;
             const loggedInUser = req.user;
             //Need to filter those feed in which loggedIn User has sent or received the connectionRequest
             const findAlreadySentRequest = await ConnectionRequestModel.find({
@@ -23,7 +27,7 @@ const userController = {
                     { _id: { $nin: Array.from(hideUsersFromFeed) } },
                     { _id: { $ne: loggedInUser._id } }
                 ]
-            }).select(UserAllowedData);
+            }).select(UserAllowedData).skip(skip).limit(limit);
             if (findsUserFeed.length <= 0) {
                 return res.status(200).json({
                     message: 'No Feed to shows',

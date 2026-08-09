@@ -36,7 +36,12 @@ const authController = {
             if (isPasswordValid && userFind) {
                 // Adding the logic to authenticate the token
                 const token = await userFind.getJWT();
-                res.cookie('token', token);
+                res.cookie('token', token, {
+                    httpOnly: true,  // Prevents frontend JS from reading the cookie
+                    secure: true,    // Forces the cookie to only be sent over HTTPS
+                    sameSite: 'strict', // Protects against CSRF attacks while allowing normal navigation
+                    path: '/'        // Makes the cookie accessible across your entire API route tree
+                });
                 const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id } = userFind;
                 // console.log('userDATA',userData);
                 res.status(200).json({
@@ -57,6 +62,14 @@ const authController = {
             res.cookie("token", null, {
                 expires: new Date(Date.now()),
             });
+            res.cookie("token", "", {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                path: '/',
+                expires: new Date(Date.now()), // Set to Jan 1, 1970 to guarantee immediate deletion
+            });
+
             res.status(200).send({
                 data: {
                     logOutStatus: true,

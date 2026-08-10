@@ -59,13 +59,15 @@ class connectionRequest {
                 return res.status(400).json({ message: 'status is not valid' });
             };
             const userLoggedIn = req.user;
+            console.log(userLoggedIn);
 
             let connectionRequestFound = await ConnectionRequestModel.findOne({
                 _id: requestId,
                 // $in is cleaner when you’re just checking if a field matches one of several values.
                 status: { $in: ["interested", "accepted"] },
-                toUserId: userLoggedIn._id
+                toUserId: userLoggedIn.id
             });
+            console.log('test-1',connectionRequestFound);
 
             // Check whetehr connectionRequested exist and toUserId exist 
             if (!connectionRequestFound) {

@@ -3,7 +3,7 @@ const app = express();
 const { connectDB } = require('./config/database.js');
 const cookieParser = require('cookie-parser');
 const indexRouter = require('./routes/index.js');
-
+var timeout = require('connect-timeout');
 const cors = require('cors')
 
 connectDB().
@@ -24,6 +24,7 @@ app.use(cors({
 }));
 // Middle ware that will convert the json into javascript object that can under stand by the server. 
 app.use(express.json());
+app.use(timeout('10s'))
 // cookies parser;
 /*
 Cookie parser  will help to read the cookie parser and use it in the application. 

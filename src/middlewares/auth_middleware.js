@@ -26,7 +26,10 @@ let userAuth = async (req, res, next) => {
                 path: '/' // Ensure the path matches your original cookie configuration
             });
 
-            return res.status(401).json({ message: 'Session expired. Please log in again.' });
+            return res.status(401).json({
+                message: 'Session expired. Please log in again.',
+                status: 401
+            });
         } else {
 
             res.status(401).json({

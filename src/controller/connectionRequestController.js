@@ -59,7 +59,6 @@ class connectionRequest {
                 return res.status(400).json({ message: 'status is not valid' });
             };
             const userLoggedIn = req.user;
-            console.log(userLoggedIn);
 
             let connectionRequestFound = await ConnectionRequestModel.findOne({
                 _id: requestId,
@@ -67,7 +66,52 @@ class connectionRequest {
                 status: { $in: ["interested", "accepted"] },
                 toUserId: userLoggedIn.id
             });
-            console.log('test-1',connectionRequestFound);
+            console.log('test-1', connectionRequestFound);
+
+            // Check whetehr connectionRequested exist and toUserId exist 
+            if (!connectionRequestFound) {
+                return res.status(400).json({
+                    message: 'Connection request does not found'
+                });
+            };
+
+            connectionRequestFound.status = status;
+            const data = await connectionRequestFound.save();
+
+
+            res.status(201).json({
+                message: (status === 'accepted' ? `${userLoggedIn.firstName + ' ' + userLoggedIn.lastName} accepted the connection request` : `${userLoggedIn.firstName + '' + userLoggedIn.lastName} rejected the connection request`),
+                data: data?.status
+
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error.message
+            })
+        }
+    }
+    // Rejecting the connected users. 
+    async rejectingConnectedUsers(req, res) {
+        try {
+            let requestId = req.params.requestId;  // connection request
+            let status = req.params.status;
+            let allowedStatusToPass = ['rejected'];
+            // Only allowed status to be updated
+            if (!allowedStatusToPass.includes(status)) {
+                return res.status(400).json({ message: 'status is not valid' });
+            };
+            const userLoggedIn = req.user;
+
+            let connectionRequestFound = await ConnectionRequestModel.findOne({
+                _id: requestId,
+                // $in is cleaner when you’re just checking if a field matches one of several values.
+                status: { $in: ["accepted"] },
+                $or: [
+                    { toUserId: userLoggedIn.id },
+                    { fromUserId: userLoggedIn.id }
+                ]
+            });
+            console.log('test====', connectionRequestFound);
 
             // Check whetehr connectionRequested exist and toUserId exist 
             if (!connectionRequestFound) {

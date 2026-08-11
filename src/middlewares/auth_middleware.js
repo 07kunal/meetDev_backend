@@ -15,10 +15,19 @@ let userAuth = async (req, res, next) => {
         next();
 
     } catch (error) {
-        if (!token) {
-            res.status(401).json({
-                status: 401,
-                message: error.message
+        if (error.name === 'TokenExpiredError') {
+
+            // CRITICAL: Options MUST match exactly how the cookie was created (except maxAge/expires)
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                path: '/' // Ensure the path matches your original cookie configuration
+            });
+
+            return res.status(401).json({
+                message: 'Session expired. Please log in again.',
+                status: 401
             });
         } else {
 

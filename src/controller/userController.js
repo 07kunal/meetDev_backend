@@ -22,12 +22,6 @@ const userController = {
                 hideUsersFromFeed.add(req.toUserId.toString());
 
             });
-            const findsUserFeedCount = await User.countDocuments({
-                $and: [
-                    { _id: { $nin: Array.from(hideUsersFromFeed) } },
-                    { _id: { $ne: loggedInUser._id } }
-                ]
-            });
             const findsUserFeed = await User.find({
                 $and: [
                     { _id: { $nin: Array.from(hideUsersFromFeed) } },
@@ -38,18 +32,12 @@ const userController = {
                 return res.status(200).json({
                     message: 'No Feed to shows',
                     data: [],
-                    totalCount: findsUserFeedCount,
-                    page: page,
-                    limit: limit
                 });
             }
             // res.status(200).send(findsUserFeed);
             res.status(200).json({
                 message: 'User feed',
-                totalCount: findsUserFeedCount,   // e.g. 12
-                page: page,                      // e.g. 1
-                limit: limit,                     // e.g. 10
-                data: findsUserFeed               // actual user records
+                data: findsUserFeed
             });
         } catch (error) {
             res.status(500).json({ error: error.message });

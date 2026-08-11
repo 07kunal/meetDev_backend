@@ -9,6 +9,14 @@ beyound exceptation. Which is called the data sanetization.
 - moongse provide the inbuild method which made is easy to handle this senetaization. 
 */
 const userSchema = new Schema({
+    about: {
+        type: String,
+        // required: [true, 'User about is required'],
+        validate: {
+            validator: (value) => value.trim().length >= 3 || value.trim().length <= 200,
+            message: "About character length should lie between 3-200."
+        }
+    },
     firstName: {
         type: String,
         required: [true, 'User firstName is required'],
@@ -69,8 +77,6 @@ const userSchema = new Schema({
     address: {
         type: String,
         // required: true,
-
-
     },
     profilePic: {
         type: String,

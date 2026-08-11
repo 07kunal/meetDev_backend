@@ -66,7 +66,6 @@ class connectionRequest {
                 status: { $in: ["interested", "accepted"] },
                 toUserId: userLoggedIn.id
             });
-            console.log('test-1', connectionRequestFound);
 
             // Check whetehr connectionRequested exist and toUserId exist 
             if (!connectionRequestFound) {
@@ -111,7 +110,6 @@ class connectionRequest {
                     { fromUserId: userLoggedIn.id }
                 ]
             });
-            console.log('test====', connectionRequestFound);
 
             // Check whetehr connectionRequested exist and toUserId exist 
             if (!connectionRequestFound) {

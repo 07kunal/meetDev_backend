@@ -43,7 +43,6 @@ const authController = {
                     path: '/'        // Makes the cookie accessible across your entire API route tree
                 });
                 const { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id } = userFind;
-                // console.log('userDATA',userData);
                 res.status(200).json({
                     status: isPasswordValid,
                     data: { firstName, lastName, gender, age, emailId, education, address, profilePic, skills, id }

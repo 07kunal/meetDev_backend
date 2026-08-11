@@ -15,7 +15,6 @@ let userAuth = async (req, res, next) => {
         next();
 
     } catch (error) {
-        console.log('error ========', error.name);
         if (error.name === 'TokenExpiredError') {
 
             // CRITICAL: Options MUST match exactly how the cookie was created (except maxAge/expires)

@@ -4,6 +4,7 @@
   "description": "dev friendly zone",
   "main": "index.js",
   "scripts": {
+     "start": "node ./src/App.js",
     "dev": "nodemon ./src/App.js"
   },
   "keywords": [

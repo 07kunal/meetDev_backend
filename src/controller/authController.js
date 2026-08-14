@@ -38,7 +38,7 @@ const authController = {
                 const token = await userFind.getJWT();
                 res.cookie('token', token, {
                     httpOnly: true,  // Prevents frontend JS from reading the cookie
-                    secure: true,    // Forces the cookie to only be sent over HTTPS
+                    secure: false,    // Forces the cookie to only be sent over HTTPS
                     sameSite: 'strict', // Protects against CSRF attacks while allowing normal navigation
                     path: '/'        // Makes the cookie accessible across your entire API route tree
                 });

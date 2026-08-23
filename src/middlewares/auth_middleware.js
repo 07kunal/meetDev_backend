@@ -6,7 +6,7 @@ let userAuth = async (req, res, next) => {
     const { token } = req.cookies;
     try {
         if (!token) throw new Error('Invalid token');
-        const decodedObj = jwt.verify(token, "TEST123");
+        const decodedObj = jwt.verify(token, process?.env?.Scret_JWTKey);
         const isUserExit = await User.findById(decodedObj._id);
         if (!isUserExit) throw new Error('User not found');
 

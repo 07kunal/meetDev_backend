@@ -122,7 +122,7 @@ userSchema.methods.getJWT = async function () {
     let user = this;
     const token = jwt.sign({
         _id: user._id
-    }, 'TEST123', { expiresIn: '1hr' });
+    }, process?.env?.Scret_JWTKey, { expiresIn: '1hr' });
     return token;
 }
 // schema method for bcrypt the password. 

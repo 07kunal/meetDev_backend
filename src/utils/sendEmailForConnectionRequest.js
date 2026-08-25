@@ -7,9 +7,7 @@ const path = require('path');
 const createSendEmailCommand = (toAddress, fromAddress) => {
     const templatePath = path.join(__dirname, '..', 'emails', 'sendEmailtemplate.html');
     const htmlSource = fs.readFileSync(templatePath, 'utf-8');
-    console.log('html====',htmlSource);
     const compiledTemplate = handlebars.compile(htmlSource);
-    console.log('htmll summer====',compiledTemplate);
 
     const dynamicData = {
         recipientName: "Alex",
@@ -18,7 +16,6 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
         requestMessage:"Hi can you accept the request"
     };
     const finalHtml = compiledTemplate(dynamicData);
-    console.log('final====',finalHtml);
     return new SendEmailCommand({
         Destination: {
             /* required */

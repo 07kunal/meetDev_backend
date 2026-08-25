@@ -5,14 +5,15 @@ const cookieParser = require('cookie-parser');
 const indexRouter = require('./routes/index.js');
 var timeout = require('connect-timeout');
 const cors = require('cors')
-
+const PORT_backend= process?.env?.PORT_backend;
+const PORT_frontend= process?.env?.PORT_frontend;
+console.log('portfrontend',PORT_frontend);
 connectDB().
     then(() => {
         // first connect to the DB
         console.log('Connected! to the DB');
 
-        // then listen to the port : 3000
-        app.listen(3000, () => {
+        app.listen(PORT_backend, () => {
             console.log('Server is running');
         });
     }).

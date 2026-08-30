@@ -40,7 +40,6 @@ class connectionRequest {
 
             const data = await connectionReqeuestObj.save();
             const emailSend = await sendEmail.run();
-            console.log('=====',emailSend);
             res.status(200).json({
                 message: (status === 'interested' ? `${userLoggedIn.firstName + ' ' + userLoggedIn.lastName} send the connection request` : `${userLoggedIn.firstName + '' + userLoggedIn.lastName} ignore the connection`),
                 data: {

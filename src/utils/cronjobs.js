@@ -18,12 +18,10 @@ cron.schedule('07 18 * * *', async () => {
 
         // Make sure no repetitive emailId 
         const listOfEmails = [...new Set(pendingRequests.map((req) => req.toUserId.emailId))];
-        console.log('listOfEmail----------', listOfEmails);
         // Now send the email 
         for (const email of listOfEmails) {
             try {
                 const res = await sendEmail.run("New Connection request pending for " + email + "There are many connection request pending, please visit to meetDev.co.in and review the requests");
-                console.log('resform email send', res);
             } catch (error) {
                 console.log('ERRor while sending the email', error);
             }

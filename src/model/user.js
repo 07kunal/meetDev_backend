@@ -66,10 +66,10 @@ const userSchema = new Schema({
         },
     },
     emailVarified: {
-        type: boolean
+        type: Boolean
     },
     emailStatus: {
-        type: string,
+        type: String,
          enum: {
             values: ["BOUNCED", "COMPLAINT", "ACTIVE"],
             message: `{VALUE} is incorrect status type.`

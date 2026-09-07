@@ -1,5 +1,5 @@
 const ConnectionRequestModel = require('../model/connectionRequest');
-const { User } = require('../model/user/');
+const { User } = require('../model/User');
 const sendEmail = require('../utils/sendEmailForConnectionRequest');
 
 class connectionRequest {
@@ -41,7 +41,7 @@ class connectionRequest {
             const data = await connectionReqeuestObj.save();
             if (userLoggedIn.emailStatus !== "ACTIVE") {
                 console.log("Email not sent because of email status");
-                
+
                 return;
             }
             const emailSend = await sendEmail.run();

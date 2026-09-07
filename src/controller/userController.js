@@ -1,5 +1,5 @@
 const ConnectionRequestModel = require('../model/connectionRequest');
-const { User } = require('../model/user');
+const { User } = require('../model/User');
 
 const UserAllowedData = ["firstName", "lastName", "gender", "age", "skills", "profilePic", "education"];
 const userController = {

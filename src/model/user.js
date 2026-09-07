@@ -72,7 +72,8 @@ const userSchema = new Schema({
         type: String,
          enum: {
             values: ["BOUNCED", "COMPLAINT", "ACTIVE"],
-            message: `{VALUE} is incorrect status type.`
+            message: `{VALUE} is incorrect status type.`,
+            default: "ACTIVE"
         },
     },
     education: {

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const handlebars = require('handlebars');
 const path = require('path');
 
-const createSendEmailCommand = (toAddress, fromAddress) => {
+const createSendEmailCommand = (toAddress, fromAddress,subject,body) => {
     const templatePath = path.join(__dirname, '..', 'emails', 'sendEmailtemplate.html');
     const htmlSource = fs.readFileSync(templatePath, 'utf-8');
     const compiledTemplate = handlebars.compile(htmlSource);
@@ -13,7 +13,7 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
         recipientName: "Alex",
         senderName: "Kunal gautam",
         senderEmail: "Support@meetdev.co.in",
-        requestMessage:"Hi can you accept the request"
+        requestMessage:"Hi can you accept the request" || body
     };
     const finalHtml = compiledTemplate(dynamicData);
     return new SendEmailCommand({
@@ -42,7 +42,7 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
             },
             Subject: {
                 Charset: "UTF-8",
-                Data: "EMAIL_SUBJECT",
+                Data: subject || "EMAIL_SUBJECT",
             },
         },
         Source: fromAddress,
@@ -52,10 +52,12 @@ const createSendEmailCommand = (toAddress, fromAddress) => {
     });
 };
 
-const run = async () => {
+const run = async (subject,body) => {
     const sendEmailCommand = createSendEmailCommand(
         "kunalgautam200@outlook.com",
         "support@meetdev.co.in",
+        subject,
+        body
     );
 
     try {

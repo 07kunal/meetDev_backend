@@ -63,8 +63,18 @@ const userSchema = new Schema({
         lowercase: true,
         validate: (value) => {
             if (!validator.isEmail(value)) throw new Error('Email Address is inValid');
-        }
-
+        },
+    },
+    emailVarified: {
+        type: Boolean
+    },
+    emailStatus: {
+        type: String,
+         enum: {
+            values: ["BOUNCED", "COMPLAINT", "ACTIVE"],
+            message: `{VALUE} is incorrect status type.`,
+            default: "ACTIVE"
+        },
     },
     education: {
         type: Array,

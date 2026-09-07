@@ -1,5 +1,5 @@
 const ConnectionRequestModel = require('../model/connectionRequest');
-const { User } = require('../model/user');
+const { User } = require('../model/user/');
 const sendEmail = require('../utils/sendEmailForConnectionRequest');
 
 class connectionRequest {
@@ -39,12 +39,16 @@ class connectionRequest {
             });
 
             const data = await connectionReqeuestObj.save();
+            if (userLoggedIn.emailStatus !== "ACTIVE") {
+                console.log("Email not sent because of email status");
+                
+                return;
+            }
             const emailSend = await sendEmail.run();
-            console.log('=====',emailSend);
             res.status(200).json({
                 message: (status === 'interested' ? `${userLoggedIn.firstName + ' ' + userLoggedIn.lastName} send the connection request` : `${userLoggedIn.firstName + '' + userLoggedIn.lastName} ignore the connection`),
                 data: {
-                   status: data?.status, id: data?.Id
+                    status: data?.status, id: data?.Id
                 }
             });
 

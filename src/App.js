@@ -19,6 +19,8 @@ connectDB().
     }).
     catch((err) => console.log('err', err));
 // Adds headers: Access-Control-Allow-Origin: *
+require('./utils/cronjobs.js');
+
 app.use(cors({
     origin:"http://localhost:5173",
     credentials:true

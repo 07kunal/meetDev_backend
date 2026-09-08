@@ -26,19 +26,19 @@ const snsEmailController = {
             for (const recipient of bouncedRecipients) {
                 console.log("Bounced:", recipient.emailAddress);
             }
-            /*
-                await User.updateOne(
-      {
-        email: recipient.emailAddress
-      },
-      {
-        $set: {
-          emailStatus: "BOUNCED"
         }
-      }
-    );
-            */
-        }
+        /*
+            await User.updateOne(
+  {
+    email: recipient.emailAddress
+  },
+  {
+    $set: {
+      emailStatus: "BOUNCED"
+    }
+  }
+);
+        */
         /*
         if (message.notificationType === "Complaint") {
   const recipients =

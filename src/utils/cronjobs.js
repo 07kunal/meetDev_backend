@@ -23,7 +23,7 @@ cron.schedule('07 18 * * *', async () => {
             try {
                 const res = await sendEmail.run("New Connection request pending for " + email + "There are many connection request pending, please visit to meetDev.co.in and review the requests");
             } catch (error) {
-                // console.log('ERRor while sending the email', error);
+                console.log('ERRor while sending the email', error);
             }
         }
 

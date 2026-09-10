@@ -5,7 +5,9 @@ const validator = new snsValidator.MessageValidator();
 const snsEmailController = {
   snsNotification: async (req, res) => {
     try {
-      console.log('req--sns', req);
+      console.log("SNS notification received");
+      console.log(JSON.stringify(req.body, null, 2));
+
 
 
 
@@ -18,10 +20,33 @@ const snsEmailController = {
           return res.status(400).send("Invalid SNS message");
         }
         const messageType = req.headers["x-amz-sns-message-type"];
-        const message = JSON.parse(req.body.Message);
+        const snsMessage = JSON.parse(req.body.Message);
 
         console.log("SNS Type:", messageType);
-        console.log("SNS Body:", req.body);
+        console.log("SNS message:", snsMessage);
+        /*
+        
+        After that you'll get the actual SES notification:
+
+{
+  "notificationType": "Bounce",
+  "mail": {
+    "messageId": "010001...",
+    "destination": [
+      "receiver@example.com"
+    ]
+  },
+  "bounce": {
+    "bounceType": "Permanent",
+    "bounceSubType": "General",
+    "bouncedRecipients": [
+      {
+        "emailAddress": "receiver@example.com"
+      }
+    ]
+  }
+}
+        */
 
         // 2. Handle subscription confirmation
         if (message.Type === "SubscriptionConfirmation") {

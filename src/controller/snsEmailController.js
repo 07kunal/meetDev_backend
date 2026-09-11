@@ -24,29 +24,7 @@ const snsEmailController = {
 
         console.log("SNS Type:", messageType);
         console.log("SNS message:", snsMessage);
-        /*
         
-        After that you'll get the actual SES notification:
-
-{
-  "notificationType": "Bounce",
-  "mail": {
-    "messageId": "010001...",
-    "destination": [
-      "receiver@example.com"
-    ]
-  },
-  "bounce": {
-    "bounceType": "Permanent",
-    "bounceSubType": "General",
-    "bouncedRecipients": [
-      {
-        "emailAddress": "receiver@example.com"
-      }
-    ]
-  }
-}
-        */
 
         // 2. Handle subscription confirmation
         if (message.Type === "SubscriptionConfirmation") {

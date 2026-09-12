@@ -8,11 +8,6 @@ const snsEmailController = {
       console.log("SNS notification received");
       console.log(JSON.stringify(req.body, null, 2));
 
-
-
-
-
-
       // 1. Validate that the message actually came from SNS
       validator.validate(req.body, async (error) => {
         if (error) {

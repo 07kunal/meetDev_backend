@@ -17,8 +17,8 @@ const snsEmailController = {
         const messageType = req.headers["x-amz-sns-message-type"];
         const snsMessage = JSON.parse(req.body.Message);
 
-        console.log("SNS Type:", messageType);
-        console.log("SNS message:", snsMessage);
+        // console.log("SNS Type:", messageType);
+        // console.log("SNS message:", snsMessage);
         
 
         // 2. Handle subscription confirmation

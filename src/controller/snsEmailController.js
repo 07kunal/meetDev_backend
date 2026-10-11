@@ -1,7 +1,6 @@
-import snsValidator from "sns-validator";
+const MessageValidator = require("sns-validator");
 
-
-const validator = new snsValidator.MessageValidator();
+const validator = new MessageValidator();
 const snsEmailController = {
   snsNotification: async (req, res) => {
     try {

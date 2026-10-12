@@ -6,9 +6,8 @@ const {
 const getSecrets = async () => {
     try {
         const client = new SecretsManagerClient({
-            region: "ap-south-1"
+            region: "ap-south-1",
         });
-
         const command = new GetSecretValueCommand({
             SecretId: "meetDev/Secret"
         });
@@ -16,13 +15,15 @@ const getSecrets = async () => {
         const response = await client.send(command);
 
         const secrets = JSON.parse(response.SecretString);
-        // for (const [key, value] of Object.entries(secrets)) {
-        //     process.env[key] = value;
-        // }
-        console.log(secrets);
+        for (const [key, value] of Object.entries(secrets)) {
+            if (value !== null && value !== undefined) {
+                process.env[key] = String(value);
+            }
+        }
+        console.log('Secrets loaded from AWS Secrets Manager.',secrets);
         return secrets;
     } catch (error) {
-        process.exit(1);
+        throw error;
     }
 
 };

@@ -5,45 +5,12 @@ const cookieParser = require('cookie-parser');
 const indexRouter = require('./routes/index.js');
 var timeout = require('connect-timeout');
 const cors = require('cors');
-require('./utils/getSecrets.js');
+const { getSecrets } = require('./utils/getSecrets.js');
 
-
-// const PORT_backend= process?.env?.PORT_backend;
-// const PORT_frontend= process?.env?.PORT_frontend;
-// connectDB().
-//     then(() => {
-//         // first connect to the DB
-//         console.log('Connected! to the DB');
-
-//         app.listen(PORT_backend, () => {
-//             console.log('Server is running');
-//         });
-//     }).
-//     catch((err) => console.log('err', err));
-// // Adds headers: Access-Control-Allow-Origin: *
-// require('./utils/cronjobs.js');
-
-
-// app.use(cors({
-//     origin:`http://localhost:${PORT_frontend}`,
-//     credentials:true
-// }));
-// // Middle ware that will convert the json into javascript object that can under stand by the server. 
-// app.use(express.json());
-// app.use(timeout('10s'))
-// // cookies parser;
-// /*
-// Cookie parser  will help to read the cookie parser and use it in the application. 
-// */
-// app.use(cookieParser());
-// app.use('/', indexRouter);
-
-
-// Main bootstrap function to handle async initialization sequence
 async function startServer() {
     try {
-        // 1. Load your secrets first and wait for the promise to complete
-        // (Assuming getSecrets() exports a function that fetches secrets)
+        // Load configuration before connecting to services that depend on it.
+        await getSecrets();
         console.log('Secrets loaded successfully!');
 
         // 2. Read the ports now that environment variables are populated
@@ -76,11 +43,6 @@ async function startServer() {
 
         // 6. Define Application Routes
         app.use('/', indexRouter);
-
-        // 7. Start listening for incoming traffic
-
-        // await require('./utils/getSecrets.js').getSecrets();
-
     } catch (err) {
         console.error('Initialization error, server shutting down:', err);
         process.exit(1);

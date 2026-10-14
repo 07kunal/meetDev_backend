@@ -68,6 +68,9 @@ const userSchema = new Schema({
     emailVarified: {
         type: Boolean
     },
+    emailSuppresed: {
+        type: Boolean
+    },
     emailStatus: {
         type: String,
          enum: {

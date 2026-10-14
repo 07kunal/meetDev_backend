@@ -1,67 +1,64 @@
-const snsEmailController = {
-    snsNotification: async (req, res) => {
-        console.log('req--sns', req);
-        const messageType = req.headers["x-amz-sns-message-type"];
-        const message = JSON.parse(req.body.Message);
+const MessageValidator = require("sns-validator");
 
+const validator = new MessageValidator();
+const snsEmailController = {
+  snsNotification: async (req, res) => {
+    try {
+      console.log("SNS notification received");
+      console.log(JSON.stringify(req.body, null, 2));
+
+      // 1. Validate that the message actually came from SNS
+      validator.validate(req.body, async (error) => {
+        if (error) {
+          console.error("Invalid SNS message:", error);
+          return res.status(400).send("Invalid SNS message");
+        }
+        const messageType = req.headers["x-amz-sns-message-type"];
+        const snsMessage = JSON.parse(req.body.Message);
 
         console.log("SNS Type:", messageType);
-        console.log("SNS Body:", req.body);
+        console.log("SNS message:", snsMessage);
+        
 
-        if (messageType === "SubscriptionConfirmation") {
-            console.log("Confirm this subscription:");
-            console.log(req.body.SubscribeURL);
+        // 2. Handle subscription confirmation
+        if (message.Type === "SubscriptionConfirmation") {
+          console.log("Confirming SNS subscription...");
+
+          await fetch(message.SubscribeURL);
+
+          console.log("SNS subscription confirmed");
+
+          return res.status(200).send("Subscription confirmed");
         }
 
-        if (messageType === "Notification") {
-            const message = JSON.parse(req.body.Message);
+        // 3. Handle actual SNS notification
+        if (message.Type === "Notification") {
+          console.log("SNS notification received");
 
-            console.log("SES Event:");
-            console.log(message);
+          const sesMessage = JSON.parse(message.Message);
+
+          console.log("SES event:");
+          console.log(sesMessage);
+
+          return res.status(200).send("Notification received");
         }
 
         if (message.notificationType === "Bounce") {
-            const bouncedRecipients = message.bounce.bouncedRecipients;
+          const bouncedRecipients = message.bounce.bouncedRecipients;
 
-            for (const recipient of bouncedRecipients) {
-                console.log("Bounced:", recipient.emailAddress);
-            }
-            /*
-                await User.updateOne(
-      {
-        email: recipient.emailAddress
-      },
-      {
-        $set: {
-          emailStatus: "BOUNCED"
+          for (const recipient of bouncedRecipients) {
+            console.log("Bounced:", recipient.emailAddress);
+          }
         }
-      }
-    );
-            */
-        }
-        /*
-        if (message.notificationType === "Complaint") {
-  const recipients =
-    message.complaint.complainedRecipients || [];
 
-  for (const recipient of recipients) {
-    await User.updateOne(
-      {
-        email: recipient.emailAddress
-      },
-      {
-        $set: {
-          emailStatus: "COMPLAINED"
-        }
-      }
-    );
-  }
-}
-        */
-        res.status(200).json({
-            message: "Email sent successfully"
-        });
+        return res.status(200).send("OK");
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error message:" + error
+      })
     }
+  }
 };
 
 module.exports = snsEmailController;

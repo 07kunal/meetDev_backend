@@ -8,11 +8,7 @@ const getSecrets = async () => {
     const AWS_SECRET_KEY = process?.env?.AWS_SECRET_KEY;
     try {
         const client = new SecretsManagerClient({
-            region: "ap-south-1",
-            credentials: {
-                accessKeyId: AWS_KEY,
-                secretAccessKey: AWS_SECRET_KEY
-            }
+            region: "ap-south-1"
         });
         const command = new GetSecretValueCommand({
             SecretId: "meetDev/Secret"

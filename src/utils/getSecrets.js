@@ -4,8 +4,7 @@ const {
 } = require("@aws-sdk/client-secrets-manager");
 
 const getSecrets = async () => {
-    const AWS_KEY = process?.env?.AWS_ACCESS_KEY;
-    const AWS_SECRET_KEY = process?.env?.AWS_SECRET_KEY;
+
     try {
         const client = new SecretsManagerClient({
             region: "ap-south-1"
